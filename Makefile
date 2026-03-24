@@ -1,5 +1,5 @@
-DB_URL = postgresql://study_user:study_password@localhost:5432/study_db
-PSQL   = psql $(DB_URL)
+CONTAINER = sql-study-postgres
+PSQL      = docker exec -i $(CONTAINER) psql -U study_user -d study_db
 
 .PHONY: up down setup seed reset psql check
 
@@ -18,27 +18,27 @@ down:
 
 ## 初回セットアップ: コンテナ起動 → スキーマ作成 → サンプルデータ投入
 setup: up
-	$(PSQL) -f setup/schema.sql
-	$(PSQL) -f setup/seed.sql
+	$(PSQL) < setup/schema.sql
+	$(PSQL) < setup/seed.sql
 	@echo "✅ セットアップ完了"
 
 ## サンプルデータだけを再投入する（スキーマは変更しない）
 ## 注意: 既存データはすべて削除されます
 seed:
-	$(PSQL) -f setup/seed.sql
+	$(PSQL) < setup/seed.sql
 	@echo "✅ サンプルデータ投入完了"
 
 ## スキーマとデータを完全にリセットする
 ## 注意: すべてのテーブルが削除・再作成されます
 reset: up
-	$(PSQL) -f setup/reset.sql
-	$(PSQL) -f setup/schema.sql
-	$(PSQL) -f setup/seed.sql
+	$(PSQL) < setup/reset.sql
+	$(PSQL) < setup/schema.sql
+	$(PSQL) < setup/seed.sql
 	@echo "✅ リセット完了"
 
 ## psql に接続する
 psql:
-	$(PSQL)
+	docker exec -it $(CONTAINER) psql -U study_user -d study_db
 
 ## 各テーブルの行数を確認する
 check:
