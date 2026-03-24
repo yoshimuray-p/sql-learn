@@ -1,0 +1,8 @@
+# 必要なパッケージ
+pandas>=2.0.0
+psycopg2-binary>=2.9.0
+sqlalchemy>=2.0.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+jupyterlab>=4.0.0
+ipython>=8.0.0
